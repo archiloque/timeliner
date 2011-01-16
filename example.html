@@ -1,0 +1,68 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>TimeLiner sample</title>
+    <script src="lib/jquery-1.4.3.min.js" type="text/javascript">
+    </script>
+    <script src="lib/jquery.mousewheel.min.js" type="text/javascript">
+    </script>
+    <script src="lib/jquery.scrollTo-1.4.2-min.js" type="text/javascript">
+    </script>
+    <script src="lib/timeliner.js" type="text/javascript">
+    </script>
+    <link rel="stylesheet" href="lib/timeliner-structure.css" type="text/css">
+    <link rel="stylesheet" href="lib/timeliner-custom.css" type="text/css">
+
+    <style type="text/css">
+        #title {
+            text-align: center;
+        }
+
+        #myMainTimeLine {
+            width: 100%;
+            height: 400px;
+            background-color: #eeeeee;
+        }
+        #myOverviewTimeLine {
+            width: 100%;
+            height: 25px;
+            padding-top: 10px;
+            background-color: #f5f5f5;
+            font-size: 10px;
+        }
+        .tlOverviewTimeBlock {
+            border: 0;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function() {
+            var events = [
+                {"date": new Date(2001, 1, 0),
+                    "content": "first event !"},
+                {"date": new Date(2001, 5, 10),
+                    "content": "another event"},
+                {"date": new Date(2001, 2, 5),
+                    "content": "a third event<br>on two lines"},
+                {"date": new Date(2001, 4, 15),
+                    "content": "another one"},
+                {"date": new Date(2010, 1, 5),
+                    "content": "event"},
+                {"date": new Date(2012, 5, 5),
+                    "content": "again"},
+                {"date": new Date(2012, 11, 31),
+                    "content": "a last one"}
+            ];
+            new TimeLiner(
+                {"events" : events,
+                "mainTimeLinerSelector": "#myMainTimeLine",
+                "overviewTimeLinerSelector": "#myOverviewTimeLine"});
+        });
+    </script>
+</head>
+<body>
+<h1 id="title">TimeLine sample</h1>
+
+<div id="myMainTimeLine"></div>
+<div id="myOverviewTimeLine"></div>
+</body>
+</html>

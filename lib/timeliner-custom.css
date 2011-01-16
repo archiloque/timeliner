@@ -1,0 +1,33 @@
+/* display properties: override as needed */
+
+/* the block of times in the background of the main timeline */
+.tlMainTimeBlock {
+    border: 1px #cccccc dashed;
+}
+
+/* the dates of the main timeline */
+.tlMainDate {
+    text-align: center;
+    border: 1px #555555 solid;
+    padding-top: 5px;
+    padding-bottom: 3px;
+}
+
+/* the events of the main timeline */
+.tlMainEvent {
+    padding-bottom: 5px;
+}
+
+/* the block of times in the background of the main timeline */
+.tlOverviewTimeBlock {
+    border: 1px #dddddd dashed;
+}
+
+/* the dates of the overview timeline */
+.tlOverviewDate {
+    text-align: center;
+    border: 1px #999999 dashed;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+

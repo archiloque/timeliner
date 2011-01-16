@@ -1,0 +1,54 @@
+/* general properties, you shouldn't need to override them */
+
+/* the main timeline */
+.tlMain {
+    position: relative;
+    overflow: auto;
+}
+
+/* the block of times in the background of the main timeline */
+.tlMainTimeBlock {
+    position: absolute;
+    height: 100%;
+}
+
+/* the dates of the main timeline */
+.tlMainDate {
+    position: absolute;
+    bottom: 0;
+}
+
+/* the events of the main timeline */
+.tlMainEvent {
+    position: absolute;
+}
+
+
+/* the overview timeline */
+.tlOverview {
+    position: relative;
+    overflow: hidden;
+}
+
+/* the block of times in the background of the overview timeline */
+.tlOverviewTimeBlock {
+    position: absolute;
+    height: 100%;
+}
+
+/* the dates of the overview timeline */
+.tlOverviewDate {
+    position: absolute;
+    bottom: 0;
+}
+
+
+/* the events of the overview timeline */
+.tlOverviewEvent {
+    position: absolute;
+}
+
+/* clickable blocks */
+.tlClickable {
+    cursor: pointer;
+}
