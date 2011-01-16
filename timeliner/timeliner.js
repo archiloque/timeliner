@@ -12,10 +12,11 @@
  * overviewTimeLinerSelector : the selector to find the overview timeline
  * widthPerYear: the number of pixels for one year on the main timeline (default = 200)
  * onClick: the method to be called when the user click on an event, will be passed the event as parameter
+ * verticalMarginBetweenEvents : the vertical margin between events, default to 3
  * Advanced parameters:
  * mainDrawer: the method used to draw the events on the main timeline, will be passed the event as parameters, see TimeLiner.simpleMainDrawer for an example
  * overviewDrawer: the method used to draw the events on the overview timeline, will be passed the event as parameters, see TimeLiner.simpleOverviewDrawer for an example
- * pixelsBeforeEvent: the number of pixels between the left of an event div and the place where the event takes place in the timeline
+ * pixelsBeforeEvent: the number of pixels between the left of an event div and the place where the event takes place in the timeline, may be half the width of the icon used to indicate the event
  */
 function TimeLiner(initialParams) {
     if (! initialParams.events) {
@@ -48,23 +49,15 @@ function TimeLiner(initialParams) {
     }
 
     var defaultParams = {
-        // the function used to draw the events on the main timeline.
+        "verticalMarginBetweenEvents": 3,
         "mainDrawer": TimeLiner.simpleMainDrawer,
-        // the number of pixels between the left of an event div and the place where the event takes place in the timeline
-        // for example may be half the width of the icon used to indicate the event
         "pixelsBeforeEvent": 2,
-
-        // the number of pixels for one year on the main timeline
         "widthPerYear": 200,
-
-        // the function used to draw the events on the overview timeline.
         "overviewDrawer": TimeLiner.simpleOverviewDrawer
     };
 
     // add the default params
     var params = $.extend({}, defaultParams, initialParams);
-
-    var timeLinerMain = $("<div class='tlMain' style='height:" + mainTimeline.height() + ";'></div>").prependTo(mainTimeline);
 
     // check if all the events have a date
     $.each(events, function(index, event) {
@@ -74,8 +67,9 @@ function TimeLiner(initialParams) {
     });
 
 
+    var timeLinerMain = $("<div class='tlMain' style='height:" + mainTimeline.height() + ";'></div>").appendTo(mainTimeline);
     var minYear = events[0].date.getFullYear();
-    var maxYear = events[events.length - 1].date.getFullYear();
+    var maxYear = events[events.length - 1].date.getFullYear() + 1;
 
     // create the divs for each year
     for (var i = 0; i <= (maxYear - minYear); i++) {
@@ -94,36 +88,44 @@ function TimeLiner(initialParams) {
 
 
         var eventContent = params.mainDrawer(event);
-        var newEvent = $("<div class='tlMainEvent' style='left:" + left + "px;'>" + eventContent + "</div>").prependTo(timeLinerMain);
+        var newEvent = $("<div class='tlMainEvent'>" + eventContent + "</div>").appendTo(timeLinerMain);
+        var width = (newEvent.width() + 10);
+        newEvent.css('min-width', width + "px");
+        newEvent.css('left', left + "px");
         if (params.onClick) {
             newEvent.click(params.onclick(event)).addClass('.tlClickable');
         }
 
         // we will calculate where to draw the event by checking for overlays
-        var myLeft = newEvent.position().left;
-        var myRight = myLeft + newEvent.width();
+        var right = left + width;
+        var height = newEvent.height() + params.verticalMarginBetweenEvents;
+
         var top = 0;
+        var bottom = height;
         for (var j = 0; j < existingEvents.length; j++) {
             // current event
-            var cEvent = existingEvents[j];
-            var cLeft = cEvent.position().left;
-            var cRight = cLeft + cEvent.width();
+            var c = existingEvents[j];
 
-            var overlay = ((cLeft <= myLeft) && (myLeft <= cRight)) || ((cLeft <= myRight) && (myRight <= cRight)) || ((myLeft >= cLeft) && (myRight <= cRight));
-            if (overlay) {
-                top = Math.max(top, cEvent.position().top + cEvent.height());
+            if (((c.left <= left ) && (left <= c.right)) || ((c.left <= right) && (right <= c.right)) || ((left >= c.left) && (right <= c.right))) {
+                if (((c.top <= top) && (top <= c.bottom)) || ((c.top <= bottom) && (bottom <= c.bottom)) || ((top >= c.top) && (bottom <= c.bottom))) {
+                    top = Math.max(top, c.bottom);
+                    bottom = top + height;
+                }
             }
         }
         if (top != 0) {
             newEvent.css('top', top + "px");
         }
-        existingEvents.push(newEvent);
+        existingEvents.push({"top": top, "left": left, "right": right, "bottom": bottom});
+        existingEvents.sort(function(a, b) {
+            return a.top - b.top;
+        });
     }
 
     // draw the overview
     if (overviewTimeLine) {
 
-        var timeLinerOverview = $("<div class='tlOverview' style='height:" + overviewTimeLine.height() + ";'></div>").prependTo(overviewTimeLine);
+        var timeLinerOverview = $("<div class='tlOverview' style='height:" + overviewTimeLine.height() + ";'></div>").appendTo(overviewTimeLine);
 
         // calculate the width of each year
         var numberOfYears = (1 + maxYear - minYear);
@@ -148,7 +150,7 @@ function TimeLiner(initialParams) {
             eventDate = event.date;
             left = Math.ceil((eventDate.getFullYear() - minYear + (eventDate.getDOY() / 365)) * widthForEachYear);
             eventContent = params.overviewDrawer(event);
-            newEvent = $("<div class='tlOverviewEvent' style='left:" + left + "px;'>" + eventContent + "</div>").prependTo(timeLinerOverview);
+            newEvent = $("<div class='tlOverviewEvent' style='left:" + left + "px;'>" + eventContent + "</div>").appendTo(timeLinerOverview);
 
         }
 
