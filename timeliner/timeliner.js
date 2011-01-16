@@ -232,7 +232,7 @@ TimeLiner.simpleMainDrawer = function(event) {
         alert("Event " + event + " don't have a content parameter");
         return null;
     }
-    return "<div><img src='lib/mainEvent.gif'>" + event.content + "</div>";
+    return "<div><img src='timeliner/mainEvent.gif'>" + event.content + "</div>";
 };
 /**
  * The default overview drawer.
@@ -240,7 +240,7 @@ TimeLiner.simpleMainDrawer = function(event) {
  * @return the html code that represents the event.
  */
 TimeLiner.simpleOverviewDrawer = function(event) {
-    return "<div><img src='lib/overviewEvent.png'></div>";
+    return "<div><img src='timeliner/overviewEvent.png'></div>";
 };
 
 Date.prototype.getDOY = function() {
