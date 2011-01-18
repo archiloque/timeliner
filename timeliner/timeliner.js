@@ -10,15 +10,18 @@
  * mainTimeLinerSelector: the selector to find the main timeline
  * Optional parameters:
  * overviewTimeLinerSelector : the selector to find the overview timeline
+ * leftArrowSelector : the selector to find the left arrow
+ * rightArrowSelector : the selector to find the right arrow
+ * numberOfPixelsPerArrowClick : the number of pixels to move the timeline when clicking on an arrow, default to 800
  * widthPerYear: the number of pixels for one year on the main timeline (default = 200)
  * onClick: the method to be called when the user click on an event, will be passed the event as parameter
  * verticalMarginBetweenEvents : the vertical margin between events, default to 3
  * pixelsBeforeFirstDateOverview : number of pixels before the first year in the overview, so the border of the first year is displayed, default to 3
- * timeBlocksAndDatesOverlay : if the time blocks and date div should overlay or not, help doing some design tricks, default to true.
  * Advanced parameters:
  * mainDrawer: the method used to draw the events on the main timeline, will be passed the event as parameters, see TimeLiner.simpleMainDrawer for an example
  * overviewDrawer: the method used to draw the events on the overview timeline, will be passed the event as parameters, see TimeLiner.simpleOverviewDrawer for an example
  * pixelsBeforeEvent: the number of pixels between the left of an event div and the place where the event takes place in the timeline, may be half the width of the icon used to indicate the event
+ * timeBlocksAndDatesOverlay : if the time blocks and date div should overlay or not, help doing some design tricks, default to true.
  */
 function TimeLiner(initialParams) {
     if (! initialParams.events) {
@@ -57,7 +60,8 @@ function TimeLiner(initialParams) {
         "widthPerYear": 200,
         "overviewDrawer": TimeLiner.simpleOverviewDrawer,
         "pixelsBeforeFirstDateOverview": 3,
-        "timeBlocksAndDatesOverlay": true
+        "timeBlocksAndDatesOverlay": true,
+        "numberOfPixelsPerArrowClick": 800
     };
 
     // add the default params
@@ -125,6 +129,17 @@ function TimeLiner(initialParams) {
         existingEvents.sort(function(a, b) {
             return a.top - b.top;
         });
+    }
+
+    if(params.leftArrowSelector) {
+        $(params.leftArrowSelector).click(function() {
+            timeLinerMain.scrollTo({ top: 0, left: '-=' + params.numberOfPixelsPerArrowClick + 'px'}, 800);
+        }).addClass('tlClickable');
+    }
+    if(params.rightArrowSelector) {
+        $(params.rightArrowSelector).click(function() {
+            timeLinerMain.scrollTo({ top: 0, left: '+=' + params.numberOfPixelsPerArrowClick + 'px'}, 800);
+        }).addClass('tlClickable');
     }
 
     // draw the overview
