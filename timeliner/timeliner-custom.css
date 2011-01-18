@@ -2,7 +2,7 @@
 
 /* the block of times in the background of the main timeline */
 .tlMainTimeBlock {
-    border: 1px #cccccc dashed;
+    border-left: 1px #cccccc dashed;
 }
 
 /* the dates of the main timeline */
@@ -20,13 +20,12 @@
 
 /* the block of times in the background of the main timeline */
 .tlOverviewTimeBlock {
-    border: 1px #dddddd dashed;
+    border-left: 1px #dddddd dashed;
 }
 
 /* the dates of the overview timeline */
 .tlOverviewDate {
     text-align: center;
-    border: 1px #999999 dashed;
     padding-top: 2px;
     padding-bottom: 2px;
 }
