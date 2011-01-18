@@ -84,17 +84,22 @@ function TimeLiner(initialParams) {
     for (i = 0; i < events.length; i++) {
         var event = events[i];
         var eventDate = event.date;
+        
+        // vertical position from the date
         var left = Math.ceil((eventDate.getFullYear() - minYear + (eventDate.getDOY() / 365)) * params.widthPerYear) - params.pixelsBeforeEvent;
 
-
+		// get the content
         var eventContent = params.mainDrawer(event);
+        
+        // create it
         var newEvent = $("<div class='tlMainEvent'>" + eventContent + "</div>").appendTo(timeLinerMain);
-        var width = (newEvent.width() + 10);
-        newEvent.css('min-width', width + "px");
-        newEvent.css('left', left + "px");
         if (params.onClick) {
             newEvent.click(params.onclick(event)).addClass('.tlClickable');
         }
+
+        var width = (newEvent.width() + 10);
+        newEvent.css('min-width', width + "px");
+        newEvent.css('left', left + "px");
 
         // we will calculate where to draw the event by checking for overlays
         var right = left + width;
@@ -103,11 +108,10 @@ function TimeLiner(initialParams) {
         var top = 0;
         var bottom = height;
         for (var j = 0; j < existingEvents.length; j++) {
-            // current event
             var c = existingEvents[j];
-
             if (((c.left <= left ) && (left <= c.right)) || ((c.left <= right) && (right <= c.right)) || ((left >= c.left) && (right <= c.right))) {
                 if (((c.top <= top) && (top <= c.bottom)) || ((c.top <= bottom) && (bottom <= c.bottom)) || ((top >= c.top) && (bottom <= c.bottom))) {
+                	// something common in their position: move it lower
                     top = Math.max(top, c.bottom);
                     bottom = top + height;
                 }
