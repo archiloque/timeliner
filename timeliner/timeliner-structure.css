@@ -9,7 +9,6 @@
 /* the block of times in the background of the main timeline */
 .tlMainTimeBlock {
     position: absolute;
-    height: 100%;
     z-index: 1;
 }
 

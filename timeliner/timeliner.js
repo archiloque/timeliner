@@ -13,6 +13,8 @@
  * widthPerYear: the number of pixels for one year on the main timeline (default = 200)
  * onClick: the method to be called when the user click on an event, will be passed the event as parameter
  * verticalMarginBetweenEvents : the vertical margin between events, default to 3
+ * pixelsBeforeFirstDateOverview : number of pixels before the first year in the overview, so the border of the first year is displayed, default to 3
+ * timeBlocksAndDatesOverlay : if the time blocks and date div should overlay or not, help doing some design tricks, default to true.
  * Advanced parameters:
  * mainDrawer: the method used to draw the events on the main timeline, will be passed the event as parameters, see TimeLiner.simpleMainDrawer for an example
  * overviewDrawer: the method used to draw the events on the overview timeline, will be passed the event as parameters, see TimeLiner.simpleOverviewDrawer for an example
@@ -53,7 +55,9 @@ function TimeLiner(initialParams) {
         "mainDrawer": TimeLiner.simpleMainDrawer,
         "pixelsBeforeEvent": 2,
         "widthPerYear": 200,
-        "overviewDrawer": TimeLiner.simpleOverviewDrawer
+        "overviewDrawer": TimeLiner.simpleOverviewDrawer,
+        "pixelsBeforeFirstDateOverview": 3,
+        "timeBlocksAndDatesOverlay": true
     };
 
     // add the default params
@@ -73,10 +77,11 @@ function TimeLiner(initialParams) {
 
     // create the divs for each year
     for (var i = 0; i <= (maxYear - minYear); i++) {
-        // background block
-        timeLinerMain.append("<div class='tlMainTimeBlock' style='width:" + params.widthPerYear + "px;left:" + (i * params.widthPerYear) + "px;'></div>")
         // the year number
-        timeLinerMain.append("<div class='tlMainDate' style='width:" + params.widthPerYear + "px;left:" + (i * params.widthPerYear) + "px;'>" + (minYear + i) + "</div>")
+        var year = $("<div class='tlMainDate' style='width:" + params.widthPerYear + "px;left:" + (i * params.widthPerYear) + "px;'>" + (minYear + i) + "</div>").appendTo(timeLinerMain);
+        var heightStyle = mainTimeline.height() - (params.timeBlocksAndDatesOverlay ? 0 : year.outerHeight(true));
+        // background block
+        timeLinerMain.append("<div class='tlMainTimeBlock' style='width:" + params.widthPerYear + "px;left:" + (i * params.widthPerYear) + "px;height:" + heightStyle +"px;'></div>");
     }
 
     // create the events
@@ -84,22 +89,17 @@ function TimeLiner(initialParams) {
     for (i = 0; i < events.length; i++) {
         var event = events[i];
         var eventDate = event.date;
-        
-        // vertical position from the date
         var left = Math.ceil((eventDate.getFullYear() - minYear + (eventDate.getDOY() / 365)) * params.widthPerYear) - params.pixelsBeforeEvent;
 
-		// get the content
-        var eventContent = params.mainDrawer(event);
-        
-        // create it
-        var newEvent = $("<div class='tlMainEvent'>" + eventContent + "</div>").appendTo(timeLinerMain);
-        if (params.onClick) {
-            newEvent.click(params.onclick(event)).addClass('.tlClickable');
-        }
 
+        var eventContent = params.mainDrawer(event);
+        var newEvent = $("<div class='tlMainEvent'>" + eventContent + "</div>").appendTo(timeLinerMain);
         var width = (newEvent.width() + 10);
         newEvent.css('min-width', width + "px");
         newEvent.css('left', left + "px");
+        if (params.onClick) {
+            newEvent.click(params.onclick(event)).addClass('.tlClickable');
+        }
 
         // we will calculate where to draw the event by checking for overlays
         var right = left + width;
@@ -108,10 +108,11 @@ function TimeLiner(initialParams) {
         var top = 0;
         var bottom = height;
         for (var j = 0; j < existingEvents.length; j++) {
+            // current event
             var c = existingEvents[j];
+
             if (((c.left <= left ) && (left <= c.right)) || ((c.left <= right) && (right <= c.right)) || ((left >= c.left) && (right <= c.right))) {
                 if (((c.top <= top) && (top <= c.bottom)) || ((c.top <= bottom) && (bottom <= c.bottom)) || ((top >= c.top) && (bottom <= c.bottom))) {
-                	// something common in their position: move it lower
                     top = Math.max(top, c.bottom);
                     bottom = top + height;
                 }
@@ -133,7 +134,7 @@ function TimeLiner(initialParams) {
 
         // calculate the width of each year
         var numberOfYears = (1 + maxYear - minYear);
-        var widthForEachYear = Math.ceil((overviewTimeLine.width() - 15) / numberOfYears);
+        var widthForEachYear = Math.ceil((overviewTimeLine.width() - (15 + params.pixelsBeforeFirstDateOverview)) / numberOfYears);
         // add one more year to go to the end of the page
         if ((widthForEachYear * numberOfYears) < overviewTimeLine.width()) {
             numberOfYears++;
@@ -142,9 +143,10 @@ function TimeLiner(initialParams) {
         // create the div for each year
         for (i = 0; i <= numberOfYears; i++) {
             // background block
-            timeLinerOverview.append("<div class='tlOverviewTimeBlock' style='width:" + widthForEachYear + "px;left:" + (i * widthForEachYear) + "px;'></div>")
+            left = params.pixelsBeforeFirstDateOverview + (i * widthForEachYear);
+            timeLinerOverview.append("<div class='tlOverviewTimeBlock' style='width:" + widthForEachYear + "px;left:" + left + "px;'></div>")
             // the year number
-            timeLinerOverview.append("<div class='tlOverviewDate' style='width:" + widthForEachYear + "px;left:" + (i * widthForEachYear) + "px;'>" + (minYear + i) + "</div>")
+            timeLinerOverview.append("<div class='tlOverviewDate' style='width:" + widthForEachYear + "px;left:" + left + "px;'>" + (minYear + i) + "</div>")
         }
 
         // create the events
@@ -152,7 +154,7 @@ function TimeLiner(initialParams) {
         for (i = 0; i < events.length; i++) {
             event = events[i];
             eventDate = event.date;
-            left = Math.ceil((eventDate.getFullYear() - minYear + (eventDate.getDOY() / 365)) * widthForEachYear);
+            left = params.pixelsBeforeFirstDateOverview + Math.ceil((eventDate.getFullYear() - minYear + (eventDate.getDOY() / 365)) * widthForEachYear);
             eventContent = params.overviewDrawer(event);
             newEvent = $("<div class='tlOverviewEvent' style='left:" + left + "px;'>" + eventContent + "</div>").appendTo(timeLinerOverview);
 
