@@ -93,7 +93,6 @@ function TimeLiner(initialParams) {
         var eventDate = event.date;
         var left = Math.ceil((eventDate.getFullYear() - minYear + (eventDate.getDOY() / 365)) * params.widthPerYear) - params.pixelsBeforeEvent;
 
-
         var eventContent = params.mainDrawer(event);
         var newEvent = $("<div class='tlMainEvent'>" + eventContent + "</div>").appendTo(timeLinerMain);
         var width = (newEvent.outerWidth(true) + 10);
@@ -103,27 +102,26 @@ function TimeLiner(initialParams) {
             newEvent.click(params.onclick(event)).addClass('.tlClickable');
         }
 
-        // we will calculate where to draw the event by checking for overlays
-        var right = left + width;
-        var height = newEvent.outerHeight(true);
 
-        var top = 0;
-        var bottom = height;
+        // we will calculate where to draw the event by checking for overlays
+        var height = newEvent.outerHeight(true);
+        var e = {"top": 0, "left": left, "right": left + width, "bottom": height};
+
         for (var j = 0; j < existingEvents.length; j++) {
             // current event
             var c = existingEvents[j];
 
-            if (((c.left <= left ) && (left <= c.right)) || ((c.left <= right) && (right <= c.right)) || ((left >= c.left) && (right <= c.right))) {
-                if (((c.top <= top) && (top <= c.bottom)) || ((c.top <= bottom) && (bottom <= c.bottom)) || ((top >= c.top) && (bottom <= c.bottom))) {
-                    top = Math.max(top, c.bottom);
-                    bottom = top + height;
+            if (((c.left <= e.left ) && (e.left <= c.right)) || ((c.left <= e.right) && (e.right <= c.right)) || ((e.left >= c.left) && (e.right <= c.right))) {
+                if (((c.top <= e.top) && (e.top <= c.bottom)) || ((c.top <= e.bottom) && (e.bottom <= c.bottom)) || ((e.top >= c.top) && (e.bottom <= c.bottom))) {
+                    e.top = Math.max(e.top, c.bottom);
+                    e.bottom = e.top + height;
                 }
             }
         }
-        if (top != 0) {
-            newEvent.css('top', top + "px");
+        if (e.top != 0) {
+            newEvent.css('top', e.top + "px");
         }
-        existingEvents.push({"top": top, "left": left, "right": right, "bottom": bottom});
+        existingEvents.push(e);
         existingEvents.sort(function(a, b) {
             return a.top - b.top;
         });
@@ -157,7 +155,7 @@ function TimeLiner(initialParams) {
         for (i = 0; i <= numberOfYears; i++) {
             // background block
             left = params.pixelsBeforeFirstDateOverview + (i * widthForEachYear);
-            timeLinerOverview.append("<div class='tlOverviewTimeBlock' style='width:" + widthForEachYear + "px;left:" + left + "px;'></div>")
+            timeLinerOverview.append("<div class='tlOverviewTimeBlock' style='width:" + widthForEachYear + "px;left:" + left + "px;'></div>");
             // the year number
             timeLinerOverview.append("<div class='tlOverviewDate' style='width:" + widthForEachYear + "px;left:" + left + "px;'>" + (minYear + i) + "</div>")
         }
@@ -202,7 +200,7 @@ function TimeLiner(initialParams) {
                                return false;
                            });
     timeLinerMain.mouseup(
-                         function (event) {
+                         function () {
                              // on mouse up, cancel the 'down' flag
                              $(this).data('down', false);
                          });
