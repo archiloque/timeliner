@@ -15,7 +15,6 @@
  * numberOfPixelsPerArrowClick : the number of pixels to move the timeline when clicking on an arrow, default to 800
  * widthPerYear: the number of pixels for one year on the main timeline (default = 200)
  * onClick: the method to be called when the user click on an event, will be passed the event as parameter
- * verticalMarginBetweenEvents : the vertical margin between events, default to 3
  * pixelsBeforeFirstDateOverview : number of pixels before the first year in the overview, so the border of the first year is displayed, default to 3
  * Advanced parameters:
  * mainDrawer: the method used to draw the events on the main timeline, will be passed the event as parameters, see TimeLiner.simpleMainDrawer for an example
@@ -54,7 +53,6 @@ function TimeLiner(initialParams) {
     }
 
     var defaultParams = {
-        "verticalMarginBetweenEvents": 3,
         "mainDrawer": TimeLiner.simpleMainDrawer,
         "pixelsBeforeEvent": 2,
         "widthPerYear": 200,
@@ -107,7 +105,7 @@ function TimeLiner(initialParams) {
 
         // we will calculate where to draw the event by checking for overlays
         var right = left + width;
-        var height = newEvent.outerHeight(true) + params.verticalMarginBetweenEvents;
+        var height = newEvent.outerHeight(true);
 
         var top = 0;
         var bottom = height;
