@@ -75,10 +75,10 @@ function TimeLiner(initialParams) {
 
     var timeLinerMain = $("<div class='tlMain' style='height:" + mainTimeline.height() + ";'></div>").appendTo(mainTimeline);
     var minYear = events[0].date.getFullYear();
-    var maxYear = events[events.length - 1].date.getFullYear() + 1;
+    var maxYear = events[events.length - 1].date.getFullYear();
 
     // create the divs for each year
-    for (var i = 0; i <= (maxYear - minYear); i++) {
+    for (var i = 0; i <= (maxYear - minYear) + 1; i++) {
         // the year number
         var year = $("<div class='tlMainDate' style='width:" + params.widthPerYear + "px;left:" + (i * params.widthPerYear) + "px;'>" + (minYear + i) + "</div>").appendTo(timeLinerMain);
         var heightStyle = mainTimeline.height() - (params.timeBlocksAndDatesOverlay ? 0 : year.outerHeight(true));
