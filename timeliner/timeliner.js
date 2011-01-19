@@ -102,22 +102,11 @@ function TimeLiner(initialParams) {
             newEvent.click(params.onclick(event)).addClass('.tlClickable');
         }
 
-
         // we will calculate where to draw the event by checking for overlays
         var height = newEvent.outerHeight(true);
         var e = {"top": 0, "left": left, "right": left + width, "bottom": height};
 
-        for (var j = 0; j < existingEvents.length; j++) {
-            // current event
-            var c = existingEvents[j];
-
-            if (((c.left <= e.left ) && (e.left <= c.right)) || ((c.left <= e.right) && (e.right <= c.right)) || ((e.left >= c.left) && (e.right <= c.right))) {
-                if (((c.top <= e.top) && (e.top <= c.bottom)) || ((c.top <= e.bottom) && (e.bottom <= c.bottom)) || ((e.top >= c.top) && (e.bottom <= c.bottom))) {
-                    e.top = Math.max(e.top, c.bottom);
-                    e.bottom = e.top + height;
-                }
-            }
-        }
+        TimeLiner.noOverlay(e, height, existingEvents);
         if (e.top != 0) {
             newEvent.css('top', e.top + "px");
         }
@@ -169,6 +158,25 @@ function TimeLiner(initialParams) {
             eventContent = params.overviewDrawer(event);
             newEvent = $("<div class='tlOverviewEvent' style='left:" + left + "px;'>" + eventContent + "</div>").appendTo(timeLinerOverview);
 
+            width = newEvent.outerWidth(true);
+            newEvent.css('min-width', width + "px");
+            newEvent.css('left', left + "px");
+            if (params.onClick) {
+                newEvent.click(params.onclick(event)).addClass('.tlClickable');
+            }
+
+            // we will calculate where to draw the event by checking for overlays
+            height = newEvent.outerHeight(true);
+            e = {"top": 0, "left": left, "right": left + width, "bottom": height};
+
+            TimeLiner.noOverlay(e, height, existingEvents);
+            if (e.top != 0) {
+                newEvent.css('top', e.top + "px");
+            }
+            existingEvents.push(e);
+            existingEvents.sort(function(a, b) {
+                return a.top - b.top;
+            });
         }
 
         // scrolling when clicking on the overview
@@ -242,6 +250,25 @@ function TimeLiner(initialParams) {
 }
 
 /**
+ * Move an event to the bottom till there is no overlay with other events.
+ * @param e the event.
+ * @param height the event's height
+ * @param existingEvents the already positioned events.
+ */
+TimeLiner.noOverlay = function(e, height, existingEvents) {
+    for (var j = 0; j < existingEvents.length; j++) {
+        // current event
+        var c = existingEvents[j];
+        if (((c.left <= e.left ) && (e.left <= c.right)) || ((c.left <= e.right) && (e.right <= c.right)) || ((e.left >= c.left) && (e.right <= c.right))) {
+            if (((c.top <= e.top) && (e.top <= c.bottom)) || ((c.top <= e.bottom) && (e.bottom <= c.bottom)) || ((e.top >= c.top) && (e.bottom <= c.bottom))) {
+                e.top = Math.max(e.top, c.bottom);
+                e.bottom = e.top + height;
+            }
+        }
+    }
+};
+
+/**
  * The default main drawer, require the events to have a content parameter.
  * @param event the event to be drawn.
  * @return the html code that represents the event.
@@ -253,6 +280,7 @@ TimeLiner.simpleMainDrawer = function(event) {
     }
     return "<div><img src='timeliner/mainEvent.gif'>" + event.content + "</div>";
 };
+
 /**
  * The default overview drawer.
  * @param event the event to be drawn.
