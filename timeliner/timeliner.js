@@ -14,7 +14,7 @@
  * rightArrowSelector : the selector to find the right arrow
  * numberOfPixelsPerArrowClick : the number of pixels to move the timeline when clicking on an arrow, default to 800
  * widthPerYear: the number of pixels for one year on the main timeline (default = 200)
- * onClick: the method to be called when the user click on an event, will be passed the event as parameter
+ * onClickEvent: the method to be called when the user click on an event, will be passed the event as parameter
  * pixelsBeforeFirstDateOverview : number of pixels before the first year in the overview, so the border of the first year is displayed, default to 3
  * Advanced parameters:
  * mainDrawer: the method used to draw the events on the main timeline, will be passed the event as parameters, see TimeLiner.simpleMainDrawer for an example
@@ -83,7 +83,7 @@ function TimeLiner(initialParams) {
         var year = $("<div class='tlMainDate' style='width:" + params.widthPerYear + "px;left:" + (i * params.widthPerYear) + "px;'>" + (minYear + i) + "</div>").appendTo(timeLinerMain);
         var heightStyle = mainTimeline.height() - (params.timeBlocksAndDatesOverlay ? 0 : year.outerHeight(true));
         // background block
-        timeLinerMain.append("<div class='tlMainTimeBlock' style='width:" + params.widthPerYear + "px;left:" + (i * params.widthPerYear) + "px;height:" + heightStyle +"px;'></div>");
+        timeLinerMain.append("<div class='tlMainTimeBlock' style='width:" + params.widthPerYear + "px;left:" + (i * params.widthPerYear) + "px;height:" + heightStyle + "px;'></div>");
     }
 
     // create the events
@@ -98,8 +98,12 @@ function TimeLiner(initialParams) {
         var width = (newEvent.outerWidth(true) + 10);
         newEvent.css('min-width', width + "px");
         newEvent.css('left', left + "px");
-        if (params.onClick) {
-            newEvent.click(params.onclick(event)).addClass('.tlClickable');
+        if (params.onClickEvent) {
+            newEvent.click({"event": event, "f": params.onClickEvent},
+                          function(params) {
+                              params.data.f(params.data.event);
+                          }
+                    ).addClass('tlClickable');
         }
 
         // we will calculate where to draw the event by checking for overlays
@@ -116,15 +120,17 @@ function TimeLiner(initialParams) {
         });
     }
 
-    if(params.leftArrowSelector) {
-        $(params.leftArrowSelector).click(function() {
-            timeLinerMain.scrollTo({ top: 0, left: '-=' + params.numberOfPixelsPerArrowClick + 'px'}, 800);
-        }).addClass('tlClickable');
+    if (params.leftArrowSelector) {
+        $(params.leftArrowSelector).click(
+                                         function() {
+                                             timeLinerMain.scrollTo({ top: 0, left: '-=' + params.numberOfPixelsPerArrowClick + 'px'}, 800);
+                                         }).addClass('tlClickable');
     }
-    if(params.rightArrowSelector) {
-        $(params.rightArrowSelector).click(function() {
-            timeLinerMain.scrollTo({ top: 0, left: '+=' + params.numberOfPixelsPerArrowClick + 'px'}, 800);
-        }).addClass('tlClickable');
+    if (params.rightArrowSelector) {
+        $(params.rightArrowSelector).click(
+                                          function() {
+                                              timeLinerMain.scrollTo({ top: 0, left: '+=' + params.numberOfPixelsPerArrowClick + 'px'}, 800);
+                                          }).addClass('tlClickable');
     }
 
     // draw the overview
