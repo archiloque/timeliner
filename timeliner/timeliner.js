@@ -136,7 +136,7 @@ function TimeLiner(initialParams) {
     // draw the overview
     if (overviewTimeLine) {
 
-        var timeLinerOverview = $("<div class='tlOverview' style='height:" + overviewTimeLine.height() + ";'></div>").appendTo(overviewTimeLine);
+        var timeLinerOverview = $("<div class='tlOverview tlClickable' style='height:" + overviewTimeLine.height() + ";'></div>").appendTo(overviewTimeLine);
 
         // calculate the width of each year
         var numberOfYears = (1 + maxYear - minYear);
