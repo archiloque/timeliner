@@ -17,7 +17,8 @@
  * onClickEvent: the method to be called when the user click on an event, will be passed the event as parameter
  * pixelsBeforeFirstDateOverview : number of pixels before the first year in the overview, so the border of the first year is displayed, default to 3
  * Advanced parameters:
- * numberOfPixelsToDate : the method to be called to calculate the number of pixels from the left a date should be placed, replace the widthPerYear value, will be passed the timeline params, the first year, and the event.
+ * numberOfPixelsToDate : the method to be called to calculate the number of pixels from the left a date should be placed, replace the widthPerYear value, will be passed the timeline params, the first year, and a date.
+ * dateToNumberOfPixels : the method to be called to calculate the date corresponding to a position on the main timeline, replace the widthPerYear value, will be passed the timeline params, the first year, and a number of pixels.
  * numberOfPixelsForYear : the method to be called to calculate the number of pixel for a year, replace the widthPerYear value, will be passed the timeline params and the year.
  * mainDrawer: the method used to draw the events on the main timeline, will be passed the event as parameters, see TimeLiner.simpleMainDrawer for an example
  * overviewDrawer: the method used to draw the events on the overview timeline, will be passed the event as parameters, see TimeLiner.simpleOverviewDrawer for an example
@@ -59,6 +60,7 @@ function TimeLiner(initialParams) {
         "pixelsBeforeEvent": 2,
         "widthPerYear": 200,
         "numberOfPixelsToDate": TimeLiner.simpleNumberOfPixelsToDate,
+        "dateToNumberOfPixels": TimeLiner.simpleDateToNumberOfPixels,
         "numberOfPixelsForYear": TimeLiner.simpleNumberOfPixelsForYear,
         "overviewDrawer": TimeLiner.simpleOverviewDrawer,
         "pixelsBeforeFirstDateOverview": 3,
@@ -98,7 +100,7 @@ function TimeLiner(initialParams) {
     var existingEvents = [];
     for (i = 0; i < events.length; i++) {
         var event = events[i];
-        var left = params.numberOfPixelsToDate(params, minYear, event.date) - params.pixelsBeforeEvent;
+        var left = params.dateToNumberOfPixels(params, minYear, event.date) - params.pixelsBeforeEvent;
 
         var eventContent = params.mainDrawer(event);
         var newEvent = $("<div class='tlMainEvent'>" + eventContent + "</div>").appendTo(timeLinerMain);
@@ -153,6 +155,21 @@ function TimeLiner(initialParams) {
             numberOfYears++;
         }
 
+        var dateToPixelForOverview = function(date) {
+            return Math.ceil((date.getFullYear() - minYear + (date.getDOY() / 365)) * widthForEachYear);
+        };
+
+        var displayedZone = $("<div class='tlDisplayedZone'></div>").appendTo(timeLinerOverview);
+        timeLinerMain.scroll(function() {
+            var date1 = params.numberOfPixelsToDate(params, minYear, timeLinerMain.scrollLeft());
+            var x1 = dateToPixelForOverview(date1);
+            var date2 = params.numberOfPixelsToDate(params, minYear, timeLinerMain.scrollLeft() + mainTimeline.width());
+            var x2 = dateToPixelForOverview(date2);
+            displayedZone.css('left', x1);
+            displayedZone.css('width', x2 - x1);
+        });
+        timeLinerMain.scroll();
+
         // create the div for each year
         for (i = 0; i <= numberOfYears; i++) {
             // background block
@@ -167,7 +184,7 @@ function TimeLiner(initialParams) {
         for (i = 0; i < events.length; i++) {
             event = events[i];
             eventDate = event.date;
-            left = params.pixelsBeforeFirstDateOverview + Math.ceil((eventDate.getFullYear() - minYear + (eventDate.getDOY() / 365)) * widthForEachYear);
+            left = params.pixelsBeforeFirstDateOverview + dateToPixelForOverview(eventDate);
             eventContent = params.overviewDrawer(event);
             newEvent = $("<div class='tlOverviewEvent' style='left:" + left + "px;'>" + eventContent + "</div>").appendTo(timeLinerOverview);
 
@@ -196,8 +213,8 @@ function TimeLiner(initialParams) {
         timeLinerOverview.click(function(event) {
             // calculate the position of the point in the main timeline coordinate system
             var numberOfYears = (event.pageX - timeLinerOverview.offset().left ) / widthForEachYear;
-            var clickedDate = new Date((minYear + numberOfYears - 1970) * 31557032762); // 31557032762 is the number of seconds in a year
-            var positionOnMain = params.numberOfPixelsToDate(params, minYear, clickedDate);
+            var clickedDate = new Date((minYear + numberOfYears - 1970) * TimeLiner.SECONDS_IN_A_YEAR);
+            var positionOnMain = params.dateToNumberOfPixels(params, minYear, clickedDate);
             // add half a screen to center the point
             positionOnMain -= mainTimeline.width() / 2;
 
@@ -207,8 +224,8 @@ function TimeLiner(initialParams) {
                 timeLinerMain.scrollTo({ top: 0, left: positionOnMain}, 800);
             }
         });
-    }
 
+    }
 
     // scrolling grabbed from http://jqueryfordesigners.com/fun-with-overflows/
     timeLinerMain.mousedown(
@@ -262,6 +279,7 @@ function TimeLiner(initialParams) {
             }
         }
     });
+
 }
 
 /**
@@ -306,14 +324,26 @@ TimeLiner.simpleOverviewDrawer = function(event) {
 };
 
 /**
- * The number of pixels from the left a date should be placed
+ * The number of pixels from the left a date should be placed.
  * @param params the timeline params.
  * @param minYear the first year to be displayed.
  * @param date the date.
  */
-TimeLiner.simpleNumberOfPixelsToDate = function(params, minYear, date) {
+TimeLiner.simpleDateToNumberOfPixels = function(params, minYear, date) {
     return Math.ceil((date.getFullYear() - minYear + (date.getDOY() / 365)) * params.widthPerYear);
 };
+
+/**
+ * The date corresponding to a number of pixels.
+ * @param params the timeline params.
+ * @param minYear the first year to be displayed.
+ * @param pixelsNumber the number of pixels.
+ */
+TimeLiner.simpleNumberOfPixelsToDate = function(params, minYear, pixelsNumber) {
+    return new Date((minYear + (pixelsNumber / params.widthPerYear) - 1970) * TimeLiner.SECONDS_IN_A_YEAR);
+};
+
+TimeLiner.SECONDS_IN_A_YEAR = 31557032762;
 
 /**
  * The number of pixels for a year.

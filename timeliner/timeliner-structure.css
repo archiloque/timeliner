@@ -35,23 +35,30 @@
 .tlOverviewTimeBlock {
     position: absolute;
     height: 100%;
-    z-index: 1;
+    z-index: 2;
 }
 
 /* the dates of the overview timeline */
 .tlOverviewDate {
     position: absolute;
     bottom: 0;
-    z-index: 2;
+    z-index: 3;
 }
 
 /* the events of the overview timeline */
 .tlOverviewEvent {
     position: absolute;
-    z-index: 3;
+    z-index: 4;
 }
 
 /* clickable blocks */
 .tlClickable {
     cursor: pointer;
+}
+
+/* in the overview timeline show the time period currently displayed*/
+.tlDisplayedZone {
+    position: absolute;
+    z-index: 1;
+    height: 100%;
 }
