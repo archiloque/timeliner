@@ -3,15 +3,13 @@
 Timeliner is a simple javascript timeline drawing tool aimed at easy visual customization: you should be able to obtain the visual appearance you want using only the provided parameters and some css; and for cases where you need to edit the library code directly it should be plain and short enough to do it without hassle.
 
 A timeline is composed of 2 elements:
-- the main component where the events are displayed, often it's larger than the screen
-- an overview displaying the full time range on one screen using icons for the events with a highlighted zone that indicates the part displayed on the main view
+
+* the main component where the events are displayed, often it's larger than the screen
+* an overview displaying the full time range on one screen using icons for the events with a highlighted zone that indicates the part displayed on the main view
 
 # A Quick Example
 
-You can draw a simple timeline by providing:
-* the events
-* the main component where they should be displayed
-* an optional element to display the overview
+You can draw a simple timeline by providing the events, a jQuery selector for the main component and an optional jQuery selector for the overview:
 
     <html>
     <head>
