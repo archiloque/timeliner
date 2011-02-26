@@ -1,29 +1,33 @@
 /**
  * Timeliner : a tool to draw simple but visually cusomizable timelines
  * Julien Kirch, 2011, under MIT license
+ * except part from http://jqueryfordesigners.com/fun-with-overflows/
  */
 
 /**
  * Create a TimeLiner with the specified parameters.
+ *
  * Required params:
- * events: the events to draw, they should contain a date and - if you use the default drawer - a content
- * mainTimeLinerSelector: the selector to find the main timeline
+ * events: the events to draw, they should contain a date property and - if you use the default drawer - a content property returning the html to use for display
+ * mainTimeLinerSelector: the jQuery selector to find the main timeline
+ *
  * Optional parameters:
- * overviewTimeLinerSelector : the selector to find the overview timeline
- * leftArrowSelector : the selector to find the left arrow
- * rightArrowSelector : the selector to find the right arrow
- * numberOfPixelsPerArrowClick : the number of pixels to move the timeline when clicking on an arrow, default to 800
- * widthPerYear: the number of pixels for one year on the main timeline (default = 200)
- * onClickEvent: the method to be called when the user click on an event, will be passed the event as parameter
- * pixelsBeforeFirstDateOverview : number of pixels before the first year in the overview, so the border of the first year is displayed, default to 3
- * Advanced parameters:
- * numberOfPixelsToDate : the method to be called to calculate the number of pixels from the left a date should be placed, replace the widthPerYear value, will be passed the timeline params, the first year, and a date.
- * dateToNumberOfPixels : the method to be called to calculate the date corresponding to a position on the main timeline, replace the widthPerYear value, will be passed the timeline params, the first year, and a number of pixels.
- * numberOfPixelsForYear : the method to be called to calculate the number of pixel for a year, replace the widthPerYear value, will be passed the timeline params and the year.
- * mainDrawer: the method used to draw the events on the main timeline, will be passed the event as parameters, see TimeLiner.simpleMainDrawer for an example
+ * overviewTimeLinerSelector: the jQuery selector to find the overview timeline
+ * mainDrawer: the method used to draw the events on the main timeline, will be passed the event as parameters and should return the HTML used to represent the event, see TimeLiner.simpleMainDrawer for an example
  * overviewDrawer: the method used to draw the events on the overview timeline, will be passed the event as parameters, see TimeLiner.simpleOverviewDrawer for an example
- * pixelsBeforeEvent: the number of pixels between the left of an event div and the place where the event takes place in the timeline, may be half the width of the icon used to indicate the event
+ * leftArrowSelector: the jQuery selector to find the left arrow used to to scroll the main timeline
+ * rightArrowSelector: the selector to find the right arrow used to to scroll the main timeline
+ * numberOfPixelsPerArrowClick : the number of pixels to move the timeline when clicking on an arrow, default to 800
+ * widthPerYear: the number of pixels for one year on the main timeline, default to 200
+ * onClickEvent: the method to be called when the user click on an event, will be passed the event as parameter
+ * pixelsBeforeFirstDateOverview: number of pixels before the first year in the overview, so the border of the first year is displayed, default to 3
+ *
+ * Advanced parameters:
+ * numberOfPixelsForYear: the method to be called to calculate the number of pixels for a year, replace the widthPerYear value, will be passed the timeline params and the year.
+ * pixelsBeforeEvent: the number of pixels between the left of an event div and the place where the event takes place in the timeline, may be half the width of the icon used to precisely indicate the event
  * timeBlocksAndDatesOverlay : if the time blocks and date div should overlay or not, help doing some design tricks, default to true.
+ * numberOfPixelsToDate: the method to be called to calculate the number of pixels from the left a date should be placed, replace the widthPerYear value, will be passed the timeline params, the first year, and a date.
+ * dateToNumberOfPixels: the method to be called to calculate the date corresponding to a position on the main timeline, replace the widthPerYear value, will be passed the timeline params, the first year, and a number of pixels.
  */
 function TimeLiner(initialParams) {
     if (! initialParams.events) {
@@ -311,7 +315,7 @@ TimeLiner.simpleMainDrawer = function(event) {
         alert("Event " + event + " don't have a content parameter");
         return null;
     }
-    return "<div><img src='timeliner/mainEvent.gif'>" + event.content + "</div>";
+    return "<div><img class='defaultMainEvent' src='timeliner/mainEvent.gif'>" + event.content + "</div>";
 };
 
 /**

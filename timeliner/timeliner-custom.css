@@ -1,6 +1,6 @@
 /* display properties: override as needed */
 
-/* the block of times in the background of the main timeline */
+/* the blocks representing the years in the background of the main timeline */
 .tlMainTimeBlock {
     border-left: 1px #cccccc dashed;
 }
@@ -18,7 +18,12 @@
     padding-bottom: 5px;
 }
 
-/* the block of times in the background of the main timeline */
+.defaultMainEvent {
+    height: 7px;
+    width: 7px;
+}
+
+/* the block of time in the background of the overview timeline */
 .tlOverviewTimeBlock {
     border-left: 1px #dddddd dashed;
 }
@@ -30,7 +35,7 @@
     padding-bottom: 2px;
 }
 
-/* in the overview timeline show the time period currently displayed*/
+/* in the overview timeline show the time period currently displayed in the main timeline*/
 .tlDisplayedZone {
     border: 1px #dddddd dashed;
 }
