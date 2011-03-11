@@ -81,7 +81,8 @@ This example can be seen at [http://archiloque.net/timeliner/example.html](http:
 
 # More elaborate examples:
 
-TODO: add examples when they'll be published
+* [http://app.owni.fr/timeline_internet/](http://app.owni.fr/timeline_internet/)
+* [http://app.owni.fr/timeline_medias/](http://app.owni.fr/timeline_medias/)
 
 # How it works
 
