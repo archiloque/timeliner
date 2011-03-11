@@ -189,3 +189,6 @@ It relies on:
 
 It is being tested on Firefox, Internet Explorer, Opera & Safari on Windows and Mac OS.
 
+# License
+
+Released under the MIT License: [http://www.opensource.org/licenses/mit-license.php](http://www.opensource.org/licenses/mit-license.php)
