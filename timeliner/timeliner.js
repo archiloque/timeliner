@@ -82,7 +82,7 @@ function TimeLiner(initialParams) {
         }
     });
 
-    var timeLinerMain = $("<div class='tlMain' style='height:" + mainTimeline.height() + ";'></div>").appendTo(mainTimeline);
+    var timeLinerMain = $("<div class='tlMain' style='height:" + mainTimeline.height() + "px;'></div>").appendTo(mainTimeline);
     var minYear = events[0].date.getFullYear();
     var maxYear = events[events.length - 1].date.getFullYear();
 
