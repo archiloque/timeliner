@@ -8,13 +8,13 @@
  * Create a TimeLiner with the specified parameters.
  *
  * Required params:
- * events: the events to draw, they should contain a date property and - if you use the default drawer - a content property returning the html to use for display
+ * events: an array containing the events to draw, they should contain a date property and - if you use the default drawer - a content property returning the html to use for display
  * mainTimeLinerSelector: the jQuery selector to find the main timeline
  *
  * Optional parameters:
  * overviewTimeLinerSelector: the jQuery selector to find the overview timeline
- * mainDrawer: the method used to draw the events on the main timeline, will be passed the event as parameters and should return the HTML used to represent the event, see TimeLiner.simpleMainDrawer for an example
- * overviewDrawer: the method used to draw the events on the overview timeline, will be passed the event as parameters, see TimeLiner.simpleOverviewDrawer for an example
+ * mainDrawer: the method used to create the html representing an event on the main timeline, will be passed the event as parameters and should return the HTML used to represent the event, see TimeLiner.simpleMainDrawer for an example
+ * overviewDrawer: the method used to create the html representing an event on the overview timeline, will be passed the event as parameters, see TimeLiner.simpleOverviewDrawer for an example
  * leftArrowSelector: the jQuery selector to find the left arrow used to to scroll the main timeline
  * rightArrowSelector: the selector to find the right arrow used to to scroll the main timeline
  * numberOfPixelsPerArrowClick : the number of pixels to move the timeline when clicking on an arrow, default to 800

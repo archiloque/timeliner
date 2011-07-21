@@ -88,7 +88,7 @@ This example can be seen at [http://archiloque.net/timeliner/example.html](http:
 
 When a timeline is instantiated, each element is created at its target horizontal position according to its date, then moved down until we find a space large enough to not overlay with existing events.
 
-AS elements are created using the order they are provided in the parameters the first elements will be displayed above the following ones. This can be used to choose which elements should be emphasized by being on the timeline's top.
+As elements are created using the order they are provided in the parameters the first elements will be displayed above the following ones. This can be used to choose which elements should be emphasized by being on the timeline's top.
 
 ## On external resources:
 
@@ -103,15 +103,15 @@ Because when the events' positions is calculated *the images and font may not ha
 
 ## Required Parameters
 
-* events: the events to draw, they should contain a date property and - if you use the default drawer - a content property returning the html to use for display
+* events: an array containing the events to draw, they should contain a date property and - if you use the default drawer - a content property returning the html to use for display
 * mainTimeLinerSelector: the jQuery selector to find the main timeline
 
 ## Optional parameters
 
 * overviewTimeLinerSelector: the jQuery selector to find the overview timeline
 
-* mainDrawer: the method used to draw the events on the main timeline, will be passed the event as parameters and should return the HTML used to represent the event, see TimeLiner.simpleMainDrawer for an example
-* overviewDrawer: the method used to draw the events on the overview timeline, will be passed the event as parameters and should return the HTML used to represent the event, see TimeLiner.simpleOverviewDrawer for an example
+* mainDrawer: the method used to create the html representing an event on the main timeline, will be passed the event as parameters and should return the HTML used to represent the event, see TimeLiner.simpleMainDrawer for an example
+* overviewDrawer: the method used to create the html representing an event on the overview timeline, will be passed the event as parameters and should return the HTML used to represent the event, see TimeLiner.simpleOverviewDrawer for an example
 
 * leftArrowSelector: the jQuery selector to find the left arrow used to to scroll the main timeline
 * rightArrowSelector: the jQuery selector to find the right arrow used to to scroll the main timeline
