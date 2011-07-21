@@ -19,7 +19,7 @@
  * rightArrowSelector: the selector to find the right arrow used to to scroll the main timeline
  * numberOfPixelsPerArrowClick : the number of pixels to move the timeline when clicking on an arrow, default to 800
  * widthPerYear: the number of pixels for one year on the main timeline, default to 200
- * onClickEvent: the method to be called when the user click on an event, will be passed the event as parameter
+ * onClickEvent: the method to be called when the user click on an event, will be passed the event as parameter, example: function(event) { alert("You clicked on " + event.name); }
  * pixelsBeforeFirstDateOverview: number of pixels before the first year in the overview, so the border of the first year is displayed, default to 3
  *
  * Advanced parameters:
